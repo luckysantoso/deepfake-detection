@@ -1,0 +1,49 @@
+# Nama file: .gitignore
+
+# Abaikan environment virtual Python
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Abaikan cache dan file terkompilasi Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Abaikan file distribusi dan build
+build/
+dist/
+*.egg-info/
+*.egg
+
+# --- File Spesifik Proyek ---
+*.pth
+*.pt
+*.ckpt
+
+# Abaikan file konfigurasi rahasia Streamlit dan file .env
+.streamlit/secrets.toml
+.env
+
+# Abaikan file log
+*.log
+
+# Abaikan direktori data atau gambar uji (jika ada)
+data/
+dataset/
+test_images/
+
+# --- File Spesifik Editor & IDE ---
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# --- File Spesifik Sistem Operasi ---
+.DS_Store
+Thumbs.db
