@@ -4,8 +4,8 @@
 streamlit
 
 # --- Pustaka Deep Learning & Numerik ---
-torch
-torchvision
+torch>=2.0.0
+torchvision>=0.15.0
 numpy
 
 # --- Pustaka Model & Visi Komputer ---
@@ -13,3 +13,5 @@ timm         # Diperlukan untuk backbone ConvNeXt dan ResNet
 Pillow       # Untuk memproses gambar (dari PIL)
 matplotlib   # Untuk membuat visualisasi heatmap attention
 kornia       # Pustaka visi komputer, disebutkan sebagai dependensi opsional di model_def.py
+requests
+gdown
