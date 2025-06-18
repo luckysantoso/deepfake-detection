@@ -1,5 +1,4 @@
 # Nama file: app.py
-# VERSI FINAL dengan GDOWN yang lebih andal
 
 import streamlit as st
 import torch
@@ -9,20 +8,15 @@ import io
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-import gdown  # <-- Menggunakan pustaka gdown
+import gdown
 
-# 1. Impor definisi model dari file yang kita buat sebelumnya
 from model_def import MAT
 
-# 2. Konfigurasi Dasar Aplikasi
-# ID File Google Drive dari URL Anda
 GDRIVE_FILE_ID = "1PcRsLMjrsgoHI6-92-WHj-JDyIfgHHFv"
 MODEL_PATH = "convnext-backbone.pth"
 DEVICE = torch.device("cpu")
 IMAGE_SIZE = (224, 224)
 CLASS_NAMES = ['ASLI', 'PALSU (DEEPFAKE)']
-
-# 3. Fungsi-fungsi Helper (Fungsi unduhan DISEDERHANAKAN)
 
 def download_file_from_gdrive(id, destination):
     """
@@ -52,14 +46,9 @@ def load_state(net, ckpt_state_dict):
 
 @st.cache_resource
 def load_model(model_path, gdrive_id):
-    """
-    Memeriksa, mengunduh (jika perlu), dan memuat model.
-    """
-    # Langkah 1: Panggil fungsi unduhan baru yang menggunakan gdown.
     download_file_from_gdrive(gdrive_id, model_path)
 
-    # Langkah 2: Validasi file setelah unduhan
-    if not os.path.exists(model_path) or os.path.getsize(model_path) < 100 * 1024 * 1024: # Cek jika file tidak ada atau terlalu kecil
+    if not os.path.exists(model_path) or os.path.getsize(model_path) < 100 * 1024 * 1024:
         if os.path.exists(model_path):
              st.error(f"Error: Ukuran file model tidak valid ({os.path.getsize(model_path)/(1024*1024):.2f} MB). Menghapus file rusak.")
              os.remove(model_path)
@@ -67,7 +56,6 @@ def load_model(model_path, gdrive_id):
             st.error("Error: File model gagal diunduh. Silakan refresh halaman untuk mencoba lagi.")
         return None
 
-    # Langkah 3: Lanjutkan memuat model.
     model_config = {
         'net': 'convnext_base.fb_in22k_ft_in1k', 'num_classes': 2, 'M': 4,
         'mid_dims': 256, 'dropout_rate': 0.3, 'drop_final_rate': 0.3,
@@ -95,7 +83,6 @@ def load_model(model_path, gdrive_id):
     model.eval()
     return model
 
-# --- SISA KODE (MULAI DARI preprocess_image) TETAP SAMA --- #
 def preprocess_image(image_bytes):
     """Menyiapkan gambar untuk dimasukkan ke model."""
     image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
@@ -132,28 +119,20 @@ def create_attention_heatmap(pil_image, attention_map):
     ax.axis('off')
     plt.tight_layout(pad=0)
     return fig
+    st.set_page_config(
+        page_title="DeepFake Detector", page_icon="🔍", layout="wide", initial_sidebar_state="expanded"
+    )
 
-# 4. Membuat Antarmuka Pengguna (UI) dengan Streamlit
-st.set_page_config(
-    page_title="DeepFake Detector", page_icon="🔍", layout="wide", initial_sidebar_state="expanded"
-)
+    st.markdown("""
+    <style>
+        .main-header {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #FF4B4B;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-# ... Sisa kode UI tidak perlu diubah ...
-# (Anda bisa menyalin sisa kode UI dari file Anda sebelumnya)
-
-# Custom CSS for better styling
-st.markdown("""
-<style>
-    .main-header {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #FF4B4B;  /* Streamlit primary red */
-    }
-    /* ... (sisa CSS Anda) ... */
-</style>
-""", unsafe_allow_html=True)
-
-# Header Section
-st.markdown("<h1 class='main-header'>DeepFake Detection System</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>DeepFake Detection System</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-header'>Upload a facial image to verify its authenticity and visualize the model's attention areas</p>", unsafe_allow_html=True)
 
 # Sidebar with project information
